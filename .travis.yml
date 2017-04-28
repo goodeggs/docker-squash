@@ -5,17 +5,21 @@ language: ruby
 
 env:
   global:
-  - secure: "kvTW9X4utQfIst4flNE319ae2XoExnHzTt/kalftRfNd74PINj4e+4WGfP0bImnQOWOnE3fU2M3/UrllFiVUM3EXudHV2PvIypCQqzjGzAGG6DvYvBT2R+AqWGWUoRBv7kI9ShkEWEuAtWAEZb0M02CL/fzLYX5bxx1SmHBXdbMq++x0aViDShGXp1LjdXaRu+fSRE08HZRdh+Umiqs0CLqgmbEBU86ipenY4jjyUSFhQzdr/FL3q9srttDFl4o2Z8Zoupf3mjKqzqee7K3chFOwHBH2XRDzSpFN4p1tfbmhtKKyzb4ZbTwFA33GEnEzSeqolOArw8vLmUIIXGTGYuV8otj6r+yc9U2bnup2V4ZJ7dLfjO/Q4xRAGrW+6HQVTj+Fjyh6Z8nh0t6MiOKvy1RZ+lzQkyd5NP0VPmXDNg+HHPgIHWBAg/lRopuVd8VrsyCAiU6ia8pyj+vzcmn35tqeQD2fRMTv7LlA+Kaj08sj1XlHBoTqyx/3f8I+G8gjgKGtME4D/JoosVfh8ptNt6hnpd5G50FmTTw4e/uu0q6dX0hK+1Kg98Hsxlh10GerMVikJS7KWN1PV0tPJI5osp5fxLENJt2B0qYrFjrEc2o5O5ICTsnwQDPU3pwlyIJBJQ+Ci9ZqIsxnHlcvPHBQlgpRS8xUF3K71lADXmLKYR0=" # DOCKER_EMAIL
+  - DOCKER_IMAGE=goodeggs/docker-squash:latest
   - secure: "Gfx5WzQV0L0kG3utpJ3AIAR2YQRSqG8yKyRxwd29qM2M1c7LcGGRUaZ699IO2ouRKnoaMCUSPXPllPdtsykFmG/H1AM83TDKrCz2R+CSKmQoFJVFJo4eFIa1u7/Teymj7j3uIvPCw7kX1n9eVYKvbS7hMjkGAY+L5gry1CiYdEBeE1RcdEWqzYER/FMFDqtfKJSPOtiz4O3onRypkWzi5EglfBcOO3Ek4/fWls/M+b0C0Vk1HdyreF0YW8CUF+tij8iCI0zhbQB4DcSboVQMVacdYcRKtCTvYACNd5kanLIr6WVsYAM4G+QsQnHMg3y0A9QRGJRt8nVCUa+lMnf9hMGeFM1Obd5ScxzGh+5xfVLURHD5wqoD8jeJrUz0H2hfRiiA1lOEx6qje/8lcaCuwH0Xavqo6N2Py2gIHKWlos9TLzaiqENlW7aPumlhrrzRJqIWNX2oOnjZRj7tbItdENvRWC5GeIU5aWz8y5PgvsRRNJUBVghZpgzPkWCyjVYit/gmhkje33Gr0O6ueWQRNQ5gbo8y0vbjLA/W1m/1wkGmqUolQr2Iy92VGtVr/YvLL5Nd9/rLaTW3qmYapaugxPlk19VFJZasJDysBNbAxDgSoQX6QyGA/Ldi1cr5tEyj1DinKRC5Mm+pZusPhHZrIXOl/MDbXB2NFHij+e9IkVA=" # DOCKER_USER
   - secure: "6FhIGuElXHzxb+MfKrTg5bzHG0aVFl08U24BAoiCrjbXzN2a+9o4nhKL6RhP3CEBOwIBgjcXmJbP9U2U3CqlVavuzYE+6YE7fqtLhHxKsWUAU9qJq58mLkqiBPBozlvdW3+EvrBj0Hhb1faPqtnQcCL/Gpid1ioSlcJLX/4w/gmTPw41YM6pNzxdJtAYsg5qzq0RvuVJtjA9w2bDde+dwFtKTLqsMJw0H8SOqG4Ra5HZ5CE2T0TopxB70LTG45XfQ8CPNMU8/rCZS2i5qa0yFKe6Pr0h80Vbv9wRk6M9VvTDiU1fW7QCwJfF+SY2p0+RDOH8tMa8HSxPW/LuTM0pXczpSRb1vQrjdYWPQdGRMlyI3k2jDo/c3pPnLRK1Fu3GFxuvzl2R1IH/W2EwOfjPfR4DlyF8X5ALd81PEEbvymIbBkmgdFQAGL9Od7dvVhMl8UvVXK8maZXDFl+tWX6HxMwmkt/sYMDFar76NOzDtzQbKAZHnu1MZsaY7X+efbnswo3tl8NOjzdu4P8KjrgReANS4hZ4PcHESe1kQS1O2ToT3/bKLC3fFvGfS6hQlSi2sOGw+LpJ0IB8vuRkgjvlZjhQUHmsZ/XWQp9TYtnvS82dKbx1Njmg4GA4OzMWImBoK2CNVZ836SZkyVXpDHXVVAm5+nt/8L154OmhHSTdC+4=" # DOCKER_PASS
 
 install: true # skip
 
-before_script: docker build -t goodeggs/docker-squash:latest .
+before_script: docker build -t "$DOCKER_IMAGE" .
 
-script: docker run -ti goodeggs/docker-squash:latest --version
+script: docker run -ti "$DOCKER_IMAGE" --version
 
-after_success:
-  - docker login -e "$DOCKER_EMAIL" -u "$DOCKER_USER" -p "$DOCKER_PASS"
-  - docker push goodeggs/docker-squash:latest
+before_deploy: docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
+
+deploy:
+  provider: script
+  script: docker push "$DOCKER_IMAGE"
+  on:
+    branch: master
 
